@@ -1,0 +1,30 @@
+body {
+  margin: 0;
+  color: #222;
+  background-color: #ddd;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.row {
+  display: flex;
+  gap: 5px;
+}
+.tile {
+  width: 70px;
+  height: 70px;
+  border: 1px solid currentColor;
+  border-radius: 10px;
+  box-shadow: gray 5px 5px;
+  background-color: #fff;
+  text-align: center;
+  font-size: 32px;
+}
+.tile:hover {
+  cursor: pointer;
+}
