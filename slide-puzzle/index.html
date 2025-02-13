@@ -4,11 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>slide-puzzle</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <div class="container"></div>
+  <div class="wrapper">
+    <h1>スライドパズル</h1>
+    <details>
+      <summary>ルール</summary>
+      <p>
+        ・白タイルの上下左右のタイルをクリックすると並べ替えられる<br>
+        ・完成図のように並べられたら完成
+      </p>
+    </details>
+    <details>
+      <summary>完成図</summary>
+      <img src="./img/completed.png" alt="">
+    </details>
+    <div class="tile-container"></div>
+    <p class="status">
+      <span class="completed">完成</span>
+    </p>
+  </div>
 
-  <script src="js/tiles.js"></script>
+  <script src="./js/tiles.js"></script>
 </body>
 </html>
