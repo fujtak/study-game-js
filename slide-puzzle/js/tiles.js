@@ -21,12 +21,7 @@ const generate = () => {
   }
 }
 
-const getTiles = () => {
-  return document.querySelectorAll('.tile')
-}
-
 const swap = (i, j) => {
-  const tiles = getTiles()
   const tileI = tiles[i]
   const tileJ = tiles[j]
   if(!tileI || !tileJ) return
@@ -39,7 +34,7 @@ const swap = (i, j) => {
 }
 
 const isTarget = i => {
-  const tile = getTiles()[i]
+  const tile = tiles[i]
   if(!tile) return
   return (Number(tile.dataset.value) === 0)
 }
@@ -106,14 +101,19 @@ const onClick = (e) => {
 }
 
 const addEventListener = () => {
-  for(const tile of getTiles()) {
+  for(const tile of tiles) {
     tile.addEventListener('click', onClick)
   }
 }
 
-const init = () => {
-  generate()
-  addEventListener()
+const randomize = () => {
+  for(let i = 0; i < 1000; ++i) {
+    const random = Math.floor(Math.random() * COUNT_ROW * COUNT_COLUMN)
+    tiles[random].click()
+  }
 }
 
-window.addEventListener('load', init)
+generate()
+const tiles = document.querySelectorAll('.tile')
+addEventListener()
+randomize()
