@@ -4,10 +4,10 @@ const COUNT_ROW = 4
 const COUNT_COLUMN = 4
 
 const generate = () => {
-  const root = document.querySelector('.container')
+  const root = document.querySelector('.tile-container')
   for(let i = 0; i < COUNT_ROW; ++i) {
     const row = document.createElement('div')
-    row.classList.add('row')
+    row.classList.add('tile-row')
     for(let j = 0; j < COUNT_COLUMN; ++j) {
       const tile = document.createElement('div')
       const index = i * COUNT_ROW + j
@@ -33,7 +33,7 @@ const swap = (i, j) => {
   tileJ.textContent = tmpTextContent
 }
 
-const isTarget = i => {
+const isWhiteTail = i => {
   const tile = tiles[i]
   if(!tile) return
   return (Number(tile.dataset.value) === 0)
@@ -65,15 +65,15 @@ const existBottom = i => (indexBottom(i) < COUNT_ROW * COUNT_COLUMN)
 const existLeft = i => (i % COUNT_COLUMN !== 0)
 const existRight = i => (i % COUNT_COLUMN !== (COUNT_COLUMN - 1))
 
-const existTargetTop = i => isTarget(indexTop(i))
-const existTargetBottom = i => isTarget(indexBottom(i))
-const existTargetLeft = i => isTarget(indexLeft(i))
-const existTargetRight = i => isTarget(indexRight(i))
+const existWhiteTileTop = i => isWhiteTail(indexTop(i))
+const existWhiteTileBottom = i => isWhiteTail(indexBottom(i))
+const existWhiteTileLeft = i => isWhiteTail(indexLeft(i))
+const existWhiteTileRight = i => isWhiteTail(indexRight(i))
 
-const canSwapTop = i => (existTop(i) && existTargetTop(i))
-const canSwapBottom = i => (existBottom(i) && existTargetBottom(i))
-const canSwapLeft = i => (existLeft(i) && existTargetLeft(i))
-const canSwapRight = i => (existRight(i) && existTargetRight(i))
+const canSwapTop = i => (existTop(i) && existWhiteTileTop(i))
+const canSwapBottom = i => (existBottom(i) && existWhiteTileBottom(i))
+const canSwapLeft = i => (existLeft(i) && existWhiteTileLeft(i))
+const canSwapRight = i => (existRight(i) && existWhiteTileRight(i))
 
 const swapTop = i => {
   if(!canSwapTop(i)) return
@@ -92,12 +92,32 @@ const swapRight = i => {
   swap(i, indexRight(i))
 }
 
-const onClick = (e) => {
-  const i = Number(e.target.dataset.index)
+const select = (i) => {
   if(canSwapTop(i)) swapTop(i)
   if(canSwapBottom(i)) swapBottom(i)
   if(canSwapLeft(i)) swapLeft(i)
   if(canSwapRight(i)) swapRight(i)
+}
+
+const isGameClear = () => {
+  return [...tiles].every((tile, i) => (Number(tile.dataset.value) === i))
+}
+
+const showGameClear = () => {
+  const dom = document.querySelector('.completed')
+  dom.classList.add('-show')
+}
+
+const checkGameClear = () => {
+  if(!isGameClear()) return
+  showGameClear()
+  removeEventListener()
+}
+
+const onClick = (e) => {
+  const i = Number(e.target.dataset.index)
+  select(i)
+  checkGameClear()
 }
 
 const addEventListener = () => {
@@ -105,11 +125,16 @@ const addEventListener = () => {
     tile.addEventListener('click', onClick)
   }
 }
+const removeEventListener = () => {
+  for(const tile of tiles) {
+    tile.removeEventListener('click', onClick)
+  }
+}
 
 const randomize = () => {
   for(let i = 0; i < 1000; ++i) {
     const random = Math.floor(Math.random() * COUNT_ROW * COUNT_COLUMN)
-    tiles[random].click()
+    select(random)
   }
 }
 
@@ -117,3 +142,4 @@ generate()
 const tiles = document.querySelectorAll('.tile')
 addEventListener()
 randomize()
+checkGameClear()
