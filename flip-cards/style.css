@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  color: #222;
+  background-color: #ddd;
+}
+.wrapper {
+  width: fit-content;
+  margin-inline: auto;
+}
+h1 {
+  text-align: center;
+}
+.card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.card-row {
+  display: flex;
+  gap: 5px;
+}
+.card {
+  position: relative;
+  width: 103px;
+  height: 159px;
+  border: 1px solid currentColor;
+  border-radius: 10px;
+  background-color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+}
+.card.-back:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('./img/card.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  border-radius: inherit;
+}
+.card:hover {
+  cursor: pointer;
+}
