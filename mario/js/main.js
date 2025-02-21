@@ -5,11 +5,14 @@ const canvasHeight = canvas.height
 
 let input_key_buffer = new Array()
 
-const groundWidth = canvasWidth
 const groundHeight = 30
-const groundX = 0
 const groundY = canvasHeight - groundHeight
 let groundImage = null
+const grounds = [
+  { x: 0, y: groundY, w: 200, h: groundHeight },
+  { x: 250, y: groundY, w: 200, h: groundHeight },
+  { x: 500, y: groundY, w: 530, h: groundHeight }
+];
 
 const playerWidth = 32
 const playerHeight = 32
@@ -67,7 +70,9 @@ function update() {
     isPlayerJump = false
   }
 
-  ctx.drawImage(groundImage, groundX, groundY, groundWidth, groundHeight);
+  for(const ground of grounds) {
+    ctx.drawImage(groundImage, ground.x, ground.y, ground.w, ground.h)
+  }
   ctx.drawImage(playerImage, playerX, playerY, playerWidth, playerHeight)
 
   window.requestAnimationFrame(update)
