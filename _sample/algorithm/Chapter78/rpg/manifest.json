@@ -1,0 +1,21 @@
+{
+ "short_name"       : "ラスフロ",
+ "name"             : "ラストフロンティアの少女",
+ "description"      : "新世代RPG",
+ "start_url"        : "/gh/rpg/",
+ "background_color" : "#000000",
+ "theme_color"      : "#0040c0",
+ "display"          : "standalone",
+ "icons": [
+  {
+   "src": "icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  }
+ ]
+}

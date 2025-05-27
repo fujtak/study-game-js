@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>マップエディタ</title>
+</head>
+<body>
+<div id="divChip" style="position: relative;">
+<canvas id="chipCanvas"></canvas>
+</div>
+<canvas id="bgCanvas"></canvas>
+<div id="XY">(X,Y)</div>
+<button onclick="putData()">データ出力</button>
+<button onclick="doClear()">データクリア</button><br>
+<textarea id="tArea" rows=14 cols=310></textarea>
+
+<script>
+    //キャンバスの準備
+    var SIZE = 24;
+    var CHIPS = 7;
+    var cvs_c = document.getElementById("chipCanvas");
+    var ctx_c = cvs_c.getContext("2d");
+    cvs_c.width = SIZE*CHIPS;
+    cvs_c.height = SIZE;
+
+    var cvs_b = document.getElementById("bgCanvas");
+    var ctx_b = cvs_b.getContext("2d");
+    cvs_b.width = SIZE*15*10;
+    cvs_b.height = SIZE*10;
+
+    //画像読み込み用の配列
+    var img = new Array(CHIPS);
+    var img_loaded = new Array(CHIPS);
+    function loadImg(n, filename) {
+        img_loaded[n] = false;//読み込み開始
+        img[n] = new Image();
+        img[n].onload = function() {
+            img_loaded[n] = true;
+            console.log("画像"+n+" "+filename+" 読込完了");
+            drawChip();
+        }
+        img[n].src = filename;
+    }
+
+    var selc = 0;//チップの選択
+
+    //マップデータ用の配列
+    var mapdata = new Array(10);
+    for(var y=0; y<10; y++) mapdata[y] = new Array(150).fill(0);
+
+    function drawChip() {//チップを描く
+        ctx_c.fillStyle = "black";
+        ctx_c.fillRect(0, 0, 24*SIZE, SIZE);
+        for(var i=1; i<CHIPS; i++) {
+            if(img_loaded[i] == true) ctx_c.drawImage(img[i], i*SIZE, 0, SIZE, SIZE);
+        }
+        ctx_c.lineWidth = 2;
+        ctx_c.strokeStyle = "white";
+        ctx_c.strokeRect(selc*SIZE+2, 2, SIZE-4, SIZE-4);
+    }
+
+    //チップをクリックして選ぶ
+    cvs_c.addEventListener("mousedown", selectChip);
+    function selectChip(e) {
+        var x = Math.floor(e.offsetX/SIZE);
+        if(0<=x && x<CHIPS) selc = x;
+        drawChip();
+    }
+
+    function drawBGAll() {//背景を描く
+        for(var y=0; y<10; y++) {
+            for(var x=0; x<150; x++) drawBG(x, y);
+        }
+    }
+
+    function drawBG(x, y) {
+        ctx_b.fillStyle = "black";
+        ctx_b.fillRect(x*SIZE, y*SIZE, SIZE, SIZE);
+        ctx_b.strokeStyle = "gray";
+        ctx_b.strokeRect(x*SIZE, y*SIZE, SIZE, SIZE);
+        var n = mapdata[y][x];
+        if(n > 0) {
+            if(img_loaded[n] == true) ctx_b.drawImage(img[n], x*SIZE, y*SIZE, SIZE, SIZE);
+        }
+    }
+
+    //背景のキャンバスをクリックした時
+    var clickflg = 0;
+    cvs_b.addEventListener("mousedown", mDown);
+    cvs_b.addEventListener("mouseup", mUp);
+    cvs_b.addEventListener("mousemove", mMove);
+    function mDown(e) {
+        clickflg = 1;
+        var x = Math.floor(e.offsetX/SIZE);
+        var y = Math.floor(e.offsetY/SIZE);
+        putChip(x, y);
+    }
+    function mUp(e) {
+        clickflg = 0;
+    }
+    function mMove(e) {
+        var x = Math.floor(e.offsetX/SIZE);
+        var y = Math.floor(e.offsetY/SIZE);
+        if(clickflg == 1) putChip(x, y);
+    }
+    function putChip(x, y) {
+        mapdata[y][x] = selc;
+        drawBG(x, y);
+        document.getElementById("XY").textContent = "("+x+","+y+")";
+    }
+
+    function putData() {//データ出力
+        var ta = document.getElementById("tArea");
+        ta.value = "";
+        for(var y=0; y<10; y++) {
+        ta.value += " [ ";
+            for(var x=0; x<150; x++) {
+                ta.value += mapdata[y][x];
+                if(x < 149) ta.value += ","
+            }
+            ta.value += " ],\n";
+        }
+    }
+
+    function doClear() {//データクリア
+        if(window.confirm("データをクリアします。よろしいですか？") == true) {
+            for(var y=0; y<10; y++) {
+                for(var x=0; x<150; x++) mapdata[y][x] = 0;
+            }
+            document.getElementById("tArea").value = "";
+            drawBGAll();
+        }
+    }
+
+    window.onscroll = function(e) {
+        var ta = document.getElementById("tArea");
+        var divc = document.getElementById("divChip");
+        divc.style.left = window.scrollX+"px";
+    }
+
+    window.onload = function() {
+        for(var i=1; i<CHIPS; i++) loadImg(i, "image/chip"+i+".png");
+        drawBGAll();
+    }
+</script>
+</body>
+</html>
